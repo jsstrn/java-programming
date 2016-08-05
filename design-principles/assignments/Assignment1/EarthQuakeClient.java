@@ -9,16 +9,29 @@ public class EarthQuakeClient {
     public ArrayList<QuakeEntry> filterByMagnitude(ArrayList<QuakeEntry> quakeData, double magMin) {
         ArrayList<QuakeEntry> answer = new ArrayList<>();
         // TODO
-
+        
+        //answer = quakeData
+          //  .stream()
+          //  .filter(data -> data.getMagnitude() > magMin);
+        
+        for (QuakeEntry data : quakeData) {
+            if (data.getMagnitude() > magMin) {
+                answer.add(data);
+            }
+        }
         return answer;
     }
 
-    public ArrayList<QuakeEntry> filterByDistanceFrom(ArrayList<QuakeEntry> quakeData,
-    double distMax,
+    public ArrayList<QuakeEntry> filterByDistanceFrom(ArrayList<QuakeEntry> quakeData, double distMax,
     Location from) {
         ArrayList<QuakeEntry> answer = new ArrayList<QuakeEntry>();
-        // TODO
-
+        // TODO      
+        for (QuakeEntry data : quakeData) {
+            if (from.distanceTo(data.getLocation()) < distMax) {
+                answer.add(data);
+            }
+        }
+        
         return answer;
     }
 
@@ -40,22 +53,33 @@ public class EarthQuakeClient {
         String source = "data/nov20quakedata.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
-
+        double magMin = 5.0;
+        ArrayList<QuakeEntry> filteredQuakeData = filterByMagnitude(list, magMin);
+        for (QuakeEntry data : filteredQuakeData) {
+            System.out.println(data);
+        }
     }
 
     public void closeToMe(){
         EarthQuakeParser parser = new EarthQuakeParser();
-        String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
+        // String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
+        // String source = "data/nov20quakedata.atom";
+        String source = "data/nov20quakedatasmall.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
 
         // This location is Durham, NC
-        Location city = new Location(35.988, -78.907);
+        // Location city = new Location(35.988, -78.907);
 
         // This location is Bridgeport, CA
-        // Location city =  new Location(38.17, -118.82);
-
+        Location city =  new Location(38.17, -118.82);
+        
         // TODO
+        double distMax = 1000000;
+        ArrayList<QuakeEntry> filteredQuakeData = filterByDistanceFrom(list, distMax, city);
+        for (QuakeEntry data : filteredQuakeData) {
+            System.out.println(data);
+        }
     }
 
     public void createCSV(){
